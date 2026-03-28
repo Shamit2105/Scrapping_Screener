@@ -251,6 +251,10 @@ def process_company(url):
         return
 
     company_name = soup.find('h1').text.strip()
+    if company_complete(company_name):
+        print(f"[SKIP] Already scraped {company_name}")
+        return
+
     company_id = get_company_id(soup)
 
     print(f"[INFO] Extracting {company_name}")
@@ -304,6 +308,21 @@ def save_company_data(company_name, ratios, financials, schedules, price):
         json.dump(price, f, indent=2)
 
 
+def company_complete(company_name):
+    safe_name = company_name.replace("/", "_").replace(" ", "_")
+    base_path = os.path.join("data/raw", safe_name)
+
+    if not os.path.exists(base_path):
+        return False
+
+    required_files = ["ratios.json", "tables.json", "price.json"]
+
+    for file in required_files:
+        if not os.path.exists(os.path.join(base_path, file)):
+            return False
+
+    return True
+
 
 def worker(q):
     while True:
@@ -335,5 +354,7 @@ def run_scraper(urls):
 if __name__ == "__main__":
     with open("companies.txt", "r") as f:
         urls = [line.strip() for line in f if line.strip()]
+
+
 
     run_scraper(urls)

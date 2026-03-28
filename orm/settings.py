@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'stocks',
+
 ]
 
 MIDDLEWARE = [
@@ -81,9 +83,11 @@ WSGI_APPLICATION = 'orm.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
+        'USER': 'postgres',
         'NAME': os.getenv('db_name'),
         'PASSWORD':os.getenv('db_password'),
         'HOST':'localhost',
+
         'PORT':os.getenv('db_port'),
     }
 }
